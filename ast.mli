@@ -10,3 +10,15 @@ type expr =
           | Binop of binop * expr * expr
           | Letin of string * expr * expr
           | Unop of binop * expr 
+
+
+
+type stmt =
+          | Setter of string * expr
+          | Sif of expr * stmt list
+          | Sifelse of expr * stmt list * stmt list 
+          | Swhile of expr * stmt list
+          | Sfor of string * expr * expr * stmt list 
+          | Sfordt of string * expr * expr * stmt list 
+
+type prog = stmt list 
