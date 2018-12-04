@@ -1,49 +1,62 @@
 %{
-    open ast
+    open Ast
 %} 
 
 %token <int> INT
 %token <float> FLOAT
 %token <bool> BOOLEAN
-(*int vai ser um contrutor que recebe sempre um inteiro*)
+%token <string> IDENT
+%token <string> IN
 %token EOF
 %token PLUS MINUS TIMES DIV
-%token LARGER SMALLER LEQUAL SEQUAL EQUAL NOTEQUAL 
+%token LARGER SMALLER LEQUAL SEQUAL EQ NOTEQUAL EQUALS
 %token NOT AND OR
-%token IF THEN ELSE ASSIGN
+%token IF THEN ELSE SET 
+%token LET
+%token LPAR RPAR
 
+%left RPAR
+%left LPAR 
+%nonassoc IN
 %left OR
 %left AND
 %nonassoc NOT
-%nonassoc LARGER SMALLER LEQUAL SEQUAL EQUAL NOTEQUAL 
+%nonassoc LARGER SMALLER LEQUAL SEQUAL NOTEQUAL EQUALS
 %left PLUS MINUS
 %left TIMES DIV
-%left NEG
-%start <Ast.expr> main
+%nonassoc NEG
+
+%start prog
+
+%type <Ast.expr> prog
 %%
 
-main: e = expr EOF {e}
-    | s = stmt EOF {s}
+prog: 
+    | s = stmt EOF {s} ;
+   
+expr: 
+    | c = const {Econst c}
+    | id = IDENT {Evar id}
+    | LPAR e=expr RPAR { e }
+    | e1=expr o=op e2=expr  {Binop(o, e1, e2)}
+    | NOT e=expr {Unop(Not, e)}
+    | MINUS e = expr %prec NEG {Unop(Minus, e)}
+    | LET id = IDENT EQ e1=expr IN e2=expr  {Letin(id, e1, e2)}  
     
- 
-expr: c 
-    | e1=expr e2=expr o=op {Binop(o, e1, e2)}
-    | MINUS e = expr %prec NEG{Binop(Minus, I 0, e)}
-    
-   c: i = INT {I i}
+const: i = INT {I i}
     | f = FLOAT {F f}
-    | b = BOOLEAN {B b}   
-
+    | b = BOOLEAN {B b}  
+    
 stmt:
-    IF e THEN stmt { if e then stmt }
-    |IF e THEN stmt2 ELSE stmt { if e then stmt2 else stmt}
-    |ASSIGN { };
+    IF e=expr THEN s=stmt { if e then s }
+    |IF e=expr THEN s2=stmt2 ELSE s=stmt { if e then s2 else s}
+    |ASSIGN {  };
 
 stmt2:
     IF e THEN stmt2 ELSE stmt2 {if e then stmt2 else stmt2 }
     |ASSIGN { }; 
 
-op:
+%inline op:
     PLUS {Plus}
    | MINUS {Minus}
    | TIMES {Times}
@@ -51,16 +64,17 @@ op:
    | AND {And}
    | OR {Or}
    | NOT {Not}
-   | LARGER {'>'}
-   | SMALLER {'<'}
-   | LEQUAL {">="}
-   | SEQUAL {"<="}
-   | EQUAL {"=="}
-   | NOTEQUAL {"!="}
+   | LARGER {Larger}
+   | SMALLER {Smaller}
+   | LEQUAL {Lequal}
+   | SEQUAL {Sequal}
+   | EQUALS {Equals}
+   | NOTEQUAL {Notequal}
 
-                                 *
+
+                           (*    *
                                 / \
                                / / \ 
                               /_____\
-                                |_|
+                                |_|   *)
 
