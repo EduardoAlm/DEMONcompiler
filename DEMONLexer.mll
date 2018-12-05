@@ -12,11 +12,12 @@
       "while", WHILE;
       "for", FOR;
       "to", TO;
-      "do", DONE;
+      "do", DO;
       "downto", DOWNTO;
       "done", DONE;
       "let", LET;
       "in", IN;
+      "print", PRINT;
     ]
   
   let id_or_kw =
@@ -39,4 +40,36 @@ let integer = ['0'-'9']+
 let space = [' ' '\t']
 
 rule token = parse 
-  | "//" [                                                                                                                                                                                                                               ]
+  | "//" [^ '\n']* '\n'
+  | '\n' {newline lexbuf;token lexbuf} 
+  | space+ {token lexbuf}   
+  | ident as id {id_or_kw id}
+  | '+' {PLUS}
+  | '-' {MINUS}
+  | '*' {TIMES} 
+  | '/' {DIV}
+  | '>' {LARGER} 
+  | ">=" {LEQUAL} 
+  | '<' {SMALLER} 
+  | "<=" {SEQUAL} 
+  | '=' {EQ}
+  | "==" {EQUALS}
+  | "!=" {NOTEQUAL}
+  | "not" {NOT}
+  | "&&"  {AND}
+  | "||" {OR}
+  | ';' {SCOLON}
+  | '(' {LPAR}
+  | ')' {RPAR}
+  | "(*" {comment lexbuf}
+  | integer as i { Econst (int_of_string i)}
+  | float as f { Econst (float_of_string f)}
+  | bool as b { Econst (bool_of_string b)}
+  | "//" [^ '\n']* eof
+  | eof {EOF}
+  | _ as c {raise (Lexing_error ("illegal character: " ^ String.make 1 c ^ ">:)"))}
+
+      and comment = parse
+      | "*)"    { token lexbuf }
+      | _       { comment lexbuf }
+      | eof     { raise (Lexing_error ("unterminated comment")) }
