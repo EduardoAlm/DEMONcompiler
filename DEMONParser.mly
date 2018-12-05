@@ -60,7 +60,7 @@ stmt:
     | IF e=expr THEN s2=stmts ELSE s=stmts DONE { Sifelse (e, s2, s) }
     | WHILE e=expr DO s=stmts DONE {Swhile(e, s)}
     | FOR id=IDENT EQ e1=expr TO e2=expr DO s=stmts DONE {Sfor (id, e1, e2, s)}
-    | FOR id=IDENT EQ e1=expr TO e2=expr DOWNTO s=stmts DONE {Sfordt (id, e1, e2, s)}
+    | FOR id=IDENT EQ e1=expr DOWNTO e2=expr DO s=stmts DONE {Sfordt (id, e1, e2, s)}
     ;
 
 %inline op:

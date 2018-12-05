@@ -1,5 +1,5 @@
 {
-  open Lexeer
+  open Lexer
   open Parser
 
   exception Lexing_error of string
