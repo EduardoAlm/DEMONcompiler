@@ -35,8 +35,10 @@
 
 let letter = ['a'-'z' 'A'-'Z']
 let digit = ['0'-'9']
-let id = letter (letter | digit | '_')*
+let ident = letter (letter | digit | '_')*
 let integer = ['0'-'9']+
+let float = digit* '.' digit+
+let bool = ("true" | "false")
 let space = [' ' '\t']
 
 rule token = parse 

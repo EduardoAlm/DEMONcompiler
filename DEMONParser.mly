@@ -32,7 +32,8 @@
 %%
 
 prog: 
-      s = stmts EOF {List.rev s} ;
+      s = stmts EOF {List.rev s} 
+      ;
 
 stmts: i = stmt {[i]}
      | l =stmts SCOLON i=stmt {i::l}
