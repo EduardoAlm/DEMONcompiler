@@ -11,10 +11,9 @@ type expr =
           | Letin of string * expr * expr
           | Unop of binop * expr 
 
-
-
 type stmt =
           | Setter of string * expr
+          | Print of expr
           | Sif of expr * stmt list
           | Sifelse of expr * stmt list * stmt list 
           | Swhile of expr * stmt list

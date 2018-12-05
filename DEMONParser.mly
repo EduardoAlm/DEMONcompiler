@@ -16,6 +16,7 @@
 %token LET
 %token LPAR RPAR
 %token SCOLON
+%token PRINT
 
 %nonassoc IN
 %left OR
@@ -54,6 +55,7 @@ const: i = INT {I i}
 
 stmt:
      SET id=IDENT EQ e=expr {Setter(id, e)} 
+    | PRINT e = expr {Print e} 
     | IF e=expr THEN s=stmts DONE { Sif(e, s) }
     | IF e=expr THEN s2=stmts ELSE s=stmts DONE { Sifelse (e, s2, s) }
     | WHILE e=expr DO s=stmts DONE {Swhile(e, s)}
