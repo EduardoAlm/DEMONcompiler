@@ -1,10 +1,11 @@
 %{
-    open Ast
+    open DEMONAst
 %} 
 
 %token <int> INT
 %token <float> FLOAT
-%token <bool> BOOLEAN
+%token TRUE
+%token FALSE
 %token <string> IDENT
 %token IN
 %token EOF
@@ -26,9 +27,10 @@
 %left PLUS MINUS
 %left TIMES DIV
 %nonassoc NEG
+
 %start prog
 
-%type <Ast.prog> prog
+%type <DEMONAst.prog> prog
 %%
 
 prog: 
@@ -38,6 +40,12 @@ prog:
 stmts: i = stmt {[i]}
      | l =stmts SCOLON i=stmt {i::l}
      ; 
+
+const: i = INT {I i}
+    | f = FLOAT {F f}
+    |TRUE {B true}
+    |FALSE {B false}    
+    ;
 
 expr: 
       c = const {Econst c}
@@ -49,10 +57,6 @@ expr:
     | LET id = IDENT EQ e1=expr IN e2=expr  {Letin(id, e1, e2)}  
     ;
 
-const: i = INT {I i}
-    | f = FLOAT {F f}
-    | b = BOOLEAN {B b}  
-    ;
 
 stmt:
      SET id=IDENT EQ e=expr {Setter(id, e)} 
