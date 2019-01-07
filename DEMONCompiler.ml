@@ -12,7 +12,7 @@ let compile_expr = function
     Cst i ->
     begin
         match i with
-            I j -> li t0 j
+            I j -> li t0 js
             (*|F j ->l.s f0 j*)
             |B true-> li t0 1
             |_ -> nop
