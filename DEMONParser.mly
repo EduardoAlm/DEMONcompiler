@@ -52,7 +52,8 @@ expr:
     | id = IDENT {Evar id}
     | LPAR e=expr RPAR { e }
     | e1=expr o=op e2=expr  {Binop(o, e1, e2)}
-    | NOT e=expr {Unop(Not, e)}
+    | e1=expr o=boolop e2= expr {Boolop(o, e1, e2)}
+    | NOT e=expr {Bunop(Not, e)}
     | MINUS e = expr %prec NEG {Unop(Minus, e)}
     | LET id = IDENT EQ e1=expr IN e2=expr  {Letin(id, e1, e2)}  
     ;
@@ -72,8 +73,11 @@ stmt:
     PLUS {Plus}
    | MINUS {Minus}
    | TIMES {Times}
-   | DIV {Div}
-   | AND {And}
+   | DIV {Div}   
+   ;
+
+%inline boolop:
+    AND {And}
    | OR {Or}
    | NOT {Not}
    | LARGER {Larger}
@@ -82,7 +86,8 @@ stmt:
    | SEQUAL {Sequal}
    | EQUALS {Equals}
    | NOTEQUAL {Notequal}
-   ;
+    ;
+
 
                            (*    *
                                 / \

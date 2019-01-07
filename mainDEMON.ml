@@ -2,6 +2,7 @@
 
 open Format
 open DEMONLexer
+open DEMONParser
 open Lexing
 open DEMONTypes
 (*
@@ -54,7 +55,7 @@ let () =
   end;
 
   (* Por omiss�o, o ficheiro alvo tem o mesmo nome que o ficheiro fonte, s� a extens�o muda*)
-  if !ofile="" then ofile := Filename.chop_suffix !ifile ".in" ^ ".s";
+  if !ofile="" then ofile := Filename.chop_suffix !ifile ".in" ^ ".asm";
   
   (* Abertura do ficheiro fonte em modo leitura *)
   let f = open_in !ifile in
@@ -77,7 +78,7 @@ let () =
     (* Compila��o da �rvore de sintaxe abstrata. O c�digo m�quina resultante
        desta transforma��o deve ser escrito no ficheiro alvo ofile. *)
     DEMONTypes.type_prog p;
-    DEMONCompiler.compile_program p "testDEMON.asm";
+    DEMONCompiler.compile_program p "test.asm";
     with 
     | DEMONLexer.Lexing_error c ->
 	(* Erro l�xico. Recuperamos a sua posi��o absoluta e 

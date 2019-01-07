@@ -1,29 +1,32 @@
 (*Expressoes inteiras*)
 (* Sintaxe abstracta proveniente da analise sint�ctica *)
 
-
-type binop = Plus | Minus | Times | Div | And | Or | Not | Larger | Smaller | Lequal
-            | Sequal | Equals | Notequal 
-
 type econst =  I of int | F of float | B of bool
+
+type binop = Plus | Minus | Times | Div 
+
+type boolop = And | Or | Not | Larger | Smaller | Lequal
+| Sequal | Equals | Notequal 
 
 type expr = 
           | Econst of econst
           | Evar of string
+          | Boolop of boolop * expr * expr 
+          | Bunop of boolop * expr
+          | Unop of binop * expr 
           | Binop of binop * expr * expr
           | Letin of string * expr * expr
-          | Unop of binop * expr 
-
+          
 type stmt =
           | Setter of string * expr
           | Print of expr
           | Sif of expr * stmt list
-          | Sifelse of expr * stmt list * stmt list
+          | Sifelse of expr * stmt list * stmt list 
           | Swhile of expr * stmt list
-          | Sfor of string * expr * expr * stmt list
-          | Sfordt of string * expr * expr * stmt list
+          | Sfor of string * expr * expr * stmt list 
+          | Sfordt of string * expr * expr * stmt list 
 
-type prog = stmt list   
+type prog = stmt list 
 
 (* Sintaxe abstracta ap�s aloca��o das vari�veis (ver compile.ml) *)
 (*type pconst =  I of int | F of float | B of bool

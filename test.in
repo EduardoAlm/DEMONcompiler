@@ -1,1 +1,6 @@
-print 1
+print false && true;
+print true && true;
+print false && false;
+print false || true;
+print true || true;
+print false || false
