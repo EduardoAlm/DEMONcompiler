@@ -77,7 +77,7 @@ let () =
     (* Compila��o da �rvore de sintaxe abstrata. O c�digo m�quina resultante
        desta transforma��o deve ser escrito no ficheiro alvo ofile. *)
     DEMONTypes.type_prog p;
-    DEMONCompiler.type_prog p "file.asm";
+    DEMONCompiler.compile_program p "file.asm";
     with 
     | DEMONLexer.Lexing_error c ->
 	(* Erro l�xico. Recuperamos a sua posi��o absoluta e 
