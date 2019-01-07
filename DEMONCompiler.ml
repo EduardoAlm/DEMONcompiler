@@ -8,12 +8,10 @@ let (genvar: (string, unit) Hashtbl.t) = Hashtbl.create 17
 
 module StrMap = Map.Make(String)
 (* 
-first ++ move t1 t0 ++ second ++ move t2 t0 ++ slt t0 t0 oreg t1 
-first ++ move t1 t0 ++ second ++ move t2 t0 ++ sgt t0 t0 oreg t1
-first ++ move t1 t0 ++ second ++ move t2 t0 ++ sle t0 t0 oreg t1
-first ++ move t1 t0 ++ second ++ move t2 t0 ++ sge t0 t0 oreg t1
 first ++ move t1 t0 ++ second ++ move t2 t0 ++ beq t0 t0 oreg t1
-first ++ move t1 t0 ++ second ++ move t2 t0 ++ bne t0 t0 oreg t1*)
+first ++ move t1 t0 ++ second ++ move t2 t0 ++ bne t0 t0 oreg t1
+    | _ -> nop
+*)
 
 let rec compile_expr = function
     Econst i ->
@@ -34,19 +32,18 @@ let rec compile_expr = function
           |Minus -> first ++ move t1 t0 ++ second ++ move t2 t0 ++ sub t0 t1 oreg t2 
           |Times -> first ++ move t3 t0 ++ second ++ move t4 t0 ++ mul t0 t3 oreg t4 
           |Div -> first ++ move t3 t0 ++ second ++ move t4 t0 ++ div t1 t2 ++ mflo t0
-          |Smaller -> nop
-          |Larger -> nop
-          |Lequal -> nop
-          |Sequal -> nop
-          |Equals -> nop
-          |Notequal -> nop
-          |And -> nop
-          |Or -> nop
-          |Not -> nop
+          |Smaller -> first ++ move t1 t0 ++ second ++ move t2 t0 ++ slt t0 t0 oreg t1 
+          |Larger -> first ++ move t1 t0 ++ second ++ move t2 t0 ++ sgt t0 t0 oreg t1
+          |Lequal -> first ++ move t1 t0 ++ second ++ move t2 t0 ++ sle t0 t0 oreg t1
+          |Sequal -> first ++ move t1 t0 ++ second ++ move t2 t0 ++ sge t0 t0 oreg t1
+          |Equals -> first ++ move t1 t0 ++ second ++ move t2 t0 ++ seq t0 t0 oreg t1
+          |Notequal -> first ++ move t1 t0 ++ second ++ move t2 t0 ++ sne t0 t0 oreg t1
+          |And -> first ++ move t1 t0 ++ second ++ move t2 t0 ++ and_ fp t0 t1
+          |Or -> first ++ move t1 t0 ++ second ++ move t2 t0 ++ or_ fp t0 t1
+          |Not -> first ++ move t1 t0 ++ not_ t0 t1
       end
     |Unop ( binop, e )->nop
     |Letin ( str, e1, e2 )->nop
-    | _ -> nop
 
 let compile_instr = function
     Setter ( string, e ) ->nop
@@ -56,7 +53,6 @@ let compile_instr = function
     |Swhile ( e, stmt ) ->nop
     |Sfor ( string, e1, e2, stmt ) ->nop
     |Sfordt ( string, e1, e2, stmt) -> nop
-    | _ -> nop
 
 
 (* Compilação do programa p e grava o código no ficheiro ofile *)
